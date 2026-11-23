@@ -31,6 +31,7 @@
     --p-boxs: #fb923c;   --p-boxs-bg: #3b2210;
     --p-esag: #b5d86a;   --p-esag-bg: #26301a;
     --p-unk: #f5867b;    --p-unk-bg: #3a1a17;
+    --p-album: #f2a5d0;  --p-album-bg: #3a1c2e;
     --sans: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
     --display: "Inter Display", "Inter", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
     --mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
@@ -149,6 +150,7 @@
   .p-BOXS { --c: var(--p-boxs); --cb: var(--p-boxs-bg); }
   .p-ESAG { --c: var(--p-esag); --cb: var(--p-esag-bg); }
   .p-DESCONHECIDO { --c: var(--p-unk); --cb: var(--p-unk-bg); }
+  .p-ALBUM { --c: var(--p-album); --cb: var(--p-album-bg); }
 
   .pill {
     display: inline-flex; align-items: center; justify-content: center; height: 24px; padding: 0 10px;
@@ -256,7 +258,7 @@
 <div class="app">
   <aside class="sidebar">
     <h1>Proc-Triagem</h1>
-    <div class="subtitulo">Para encaminhar encomendas de Presentes Personalizados</div>
+    <div class="subtitulo">Para encaminhar encomendas de Presentes Personalizados e separar álbuns</div>
 
     <div class="secao">Pasta</div>
     <div class="grupo">
@@ -278,7 +280,7 @@
 
     <div class="rodape">
       <button class="btn-principal" id="btn-analisar" type="button">Analisar</button>
-      <div class="versao">Versão web 1.12</div>
+      <div class="versao">Versão web 1.13</div>
     </div>
   </aside>
 
@@ -289,6 +291,7 @@
     </div>
     <div class="separadores" role="tablist">
       <button type="button" role="tab" id="tab-encomendas" aria-controls="painel-encomendas" aria-selected="true">Encomendas</button>
+      <button type="button" role="tab" id="tab-albuns" aria-controls="painel-albuns" aria-selected="false">Álbuns</button>
       <button type="button" role="tab" id="tab-pesquisar" aria-controls="painel-pesquisar" aria-selected="false">Pesquisar produto</button>
       <button type="button" role="tab" id="tab-regras" aria-controls="painel-regras" aria-selected="false">Regras</button>
     </div>
@@ -302,6 +305,13 @@
       <div class="painel" id="avisos"></div>
       <div class="painel" id="processos"></div>
       <div class="vazio" id="vazio">Escolha a pasta do canal e carregue em Analisar</div>
+    </section>
+
+    <section class="painel" id="painel-albuns" role="tabpanel" aria-labelledby="tab-albuns" hidden>
+      <div class="stats" id="stats-albuns" hidden></div>
+      <div class="painel" id="avisos-albuns"></div>
+      <div class="painel" id="categorias-albuns"></div>
+      <div class="vazio" id="vazio-albuns">Escolha a pasta dos álbuns e carregue em Analisar</div>
     </section>
 
     <section class="painel" id="painel-pesquisar" role="tabpanel" aria-labelledby="tab-pesquisar" hidden>
@@ -673,7 +683,57 @@ const Logica = (() => {
     return grupos.map(g => ({ ids: g, texto: g.map(termo).join(" OR ") }));
   }
 
+  // ------------------------------------------------------------------ álbuns (1.13)
+  // Álbuns amadores (Premium, das encomendas 3…, e Probook FPX, das Fotoprix 10…): cada pasta de encomenda vai
+  // para a pasta da sua categoria. A categoria é o nome do produto sem o "FPX", em maiúsculas
+  // ("Probook › Big Square 30x30 800gr FPX" -> "BIG SQUARE 30x30 800GR"). Decisão do utilizador (2026-11-23),
+  // conferida com a separação manual dele (lote "zzOUTROS"). O SIGNATURE_INSCRIPTION já vem separado.
+  // Só se aceitam as categorias desta lista: um álbum novo fica "Por confirmar" (nunca adivinhar).
+  const CATEGORIAS_ALBUNS = [
+    "BIG LANDSCAPE 40x30 400GR", "BIG LANDSCAPE 40x30 800GR",
+    "BIG SQUARE 30x30 400GR", "BIG SQUARE 30x30 800GR",
+    "MID SQUARE 25x25 400GR", "MID SQUARE 25x25 800GR",
+  ];
+  const SIGNATURE = "SIGNATURE_INSCRIPTION";
+  const CATEGORIAS_ALBUNS_N = CATEGORIAS_ALBUNS.map(normalizar);
+  // Um álbum: a categoria da pasta de produto é "Premium", "Probook" ou "Signature …"
+  function ehAlbum(nomePasta) {
+    const cat = normalizar(lerNomeProduto(nomePasta).categoria);
+    return /^(premium|probook|signature)\b/.test(cat);
+  }
+  // Pasta de produto do álbum -> nome da pasta da categoria, ou null (sem regra)
+  function destinoAlbum(nomePasta) {
+    const p = lerNomeProduto(nomePasta);
+    if (/^signature\b/.test(normalizar(p.categoria)) || /signature inscription/.test(normalizar(p.produto))) return SIGNATURE;
+    const n = normalizar(p.produto).replace(/\s+fpx$/, "");
+    const i = CATEGORIAS_ALBUNS_N.indexOf(n);
+    return i < 0 ? null : CATEGORIAS_ALBUNS[i];
+  }
+  const ehPastaCategoriaAlbum = nome => [...CATEGORIAS_ALBUNS_N, normalizar(SIGNATURE)].includes(normalizar(nome));
+  // Uma encomenda lida ({ canal: pasta onde está, enc, produtos }) é de álbum se um produto for álbum, ou se,
+  // sem pasta de produto, já estiver dentro de uma pasta de categoria (ex.: as do SIGNATURE_INSCRIPTION)
+  const ehEncomendaAlbum = e => e.produtos.some(ehAlbum) || (!e.produtos.length && ehPastaCategoriaAlbum(e.canal));
+  // Encomendas de álbum -> uma linha por encomenda:
+  //   { enc, canal, produto, destino (null = por confirmar), noSitio (já está na pasta certa),
+  //     outraCategoria (está dentro de outra pasta de categoria) }
+  function planoAlbuns(encomendas) {
+    const linhas = [];
+    for (const e of encomendas) {
+      const albuns = e.produtos.filter(ehAlbum);
+      const produto = albuns[0] || e.produtos[0] || null;
+      // Sem pasta de produto, dentro de uma pasta de categoria: fica onde está (ex.: SIGNATURE_INSCRIPTION)
+      const destino = produto ? destinoAlbum(produto)
+        : ehPastaCategoriaAlbum(e.canal) ? CATEGORIAS_ALBUNS[CATEGORIAS_ALBUNS_N.indexOf(normalizar(e.canal))] || SIGNATURE : null;
+      const destinos = new Set(albuns.map(destinoAlbum));
+      const noSitio = !!destino && normalizar(e.canal) === normalizar(destino);
+      linhas.push({ enc: e.enc, canal: e.canal, produto, destino: destinos.size > 1 ? null : destino, noSitio: destinos.size > 1 ? false : noSitio,
+        outraCategoria: !noSitio && ehPastaCategoriaAlbum(e.canal), varios: destinos.size > 1 });
+    }
+    return linhas;
+  }
+
   return {
+    CATEGORIAS_ALBUNS, SIGNATURE, ehAlbum, destinoAlbum, ehPastaCategoriaAlbum, ehEncomendaAlbum, planoAlbuns,
     PROCESSOS, SUBPROCESSOS, ORDEM, REGRAS, REGRAS_BMJCP, EXCECOES_BMJCP, normalizar, lerNomeProduto, classificar,
     ehPastaEncomenda, pareceEncomenda, orderId, qtdDaPasta, ehEtiqueta, produtoDaImagem, produtosDaEtiqueta,
     produtosDaEncomenda, semPastaDeProduto, ordemEtiquetas, produtoDoNomeDaEncomenda, precisaMaterial, campoDaEtiqueta, materialDaEtiqueta, acabamentoDaEtiqueta, papelDaEtiqueta, gruposPesquisa, LIMITE_PESQUISA, MAX_IDS_GRUPO,
@@ -851,8 +911,8 @@ function criarProgresso(el, tituloBase = document.title) {
   }
 
   // ------------------------------------------------------------------ separadores
-  const TABS = ["encomendas", "pesquisar", "regras"];
-  const TITULOS = { encomendas: "Encomendas", pesquisar: "Pesquisar produto", regras: "Regras" };
+  const TABS = ["encomendas", "albuns", "pesquisar", "regras"];
+  const TITULOS = { encomendas: "Encomendas", albuns: "Álbuns", pesquisar: "Pesquisar produto", regras: "Regras" };
   function mostrarTab(qual) {
     for (const t of TABS) {
       $(`tab-${t}`).setAttribute("aria-selected", String(t === qual));
@@ -1087,6 +1147,11 @@ function criarProgresso(el, tituloBase = document.title) {
     $("avisos").replaceChildren();
     $("processos").replaceChildren();
     $("vazio").hidden = false;
+    $("stats-albuns").replaceChildren();
+    $("stats-albuns").hidden = true;
+    $("avisos-albuns").replaceChildren();
+    $("categorias-albuns").replaceChildren();
+    $("vazio-albuns").hidden = false;
     estado("Pronto para iniciar");
   }
 
@@ -1106,18 +1171,30 @@ function criarProgresso(el, tituloBase = document.title) {
     if (ocupado) return;
     if (!lida) { estado("Selecione uma pasta primeiro!", "erro"); return; }
     limpar();
-    mostrarTab("encomendas");
     const avisoIgnoradas = ignoradas.length ? [avisoForaDoFormato()] : [];
     if (!lida.length) {
+      mostrarTab("encomendas");
       $("avisos").replaceChildren(...avisoIgnoradas);
       estado("Nenhuma pasta de encomenda (nº_id) nesta pasta.", "erro");
       return;
     }
+    // Álbuns (1.13): vão para o separador Álbuns; o resto segue as regras de Presentes Personalizados
+    const albuns = lida.filter(Logica.ehEncomendaAlbum);
+    const presentes = lida.filter(e => !Logica.ehEncomendaAlbum(e));
+    const estadoAlbuns = albuns.length ? analisarAlbuns(albuns, presentes.length ? [] : avisoIgnoradas) : null;
+    if (!presentes.length) {
+      mostrarTab("albuns");
+      $("vazio").textContent = "Nenhuma encomenda de Presentes Personalizados nesta pasta (ver Álbuns)";
+      estado(...estadoAlbuns);
+      return;
+    }
+    $("vazio").textContent = "Escolha a pasta do canal e carregue em Analisar";
+    mostrarTab("encomendas");
 
     // Uma linha por (encomenda, pasta de produto)
     const linhas = [];
     const semProduto = [];
-    for (const enc of lida) {
+    for (const enc of presentes) {
       if (!enc.produtos.length) { semProduto.push(enc); continue; }
       for (const produto of enc.produtos) {
         const campo = Logica.campoDaEtiqueta(produto); // "material", "acabamento", "papel" ou null
@@ -1127,11 +1204,11 @@ function criarProgresso(el, tituloBase = document.title) {
       }
     }
     const porProcesso = Object.fromEntries(ORDEM.map(k => [k, linhas.filter(l => l.processo === k)]));
-    const multi = lida.filter(e => e.produtos.length > 1);
-    const variosCanais = new Set(lida.map(e => e.canal)).size > 1;
+    const multi = presentes.filter(e => e.produtos.length > 1);
+    const variosCanais = new Set(presentes.map(e => e.canal)).size > 1;
 
     // Resumo
-    const stats = [el("div", { className: "card stat" }, el("b", { textContent: fmt(lida.length) }), el("span", { textContent: "Encomendas" }))];
+    const stats = [el("div", { className: "card stat" }, el("b", { textContent: fmt(presentes.length) }), el("span", { textContent: "Encomendas" }))];
     for (const k of ORDEM) {
       const n = porProcesso[k].length;
       if (!n && k === "DESCONHECIDO") continue;
@@ -1168,6 +1245,11 @@ function criarProgresso(el, tituloBase = document.title) {
         "Não aparece" + (n === 1 ? "" : "m") + " em nenhum processo:",
         el("ul", {}, ...semProduto.map(e => el("li", { textContent: e.enc })))));
     }
+    if (albuns.length) {
+      const n = albuns.length;
+      avisos.push(el("div", { className: "aviso info" },
+        el("b", { textContent: `${fmt(n)} álbu${n === 1 ? "m" : "ns"} nesta pasta. ` }), "Estão no separador Álbuns."));
+    }
     $("avisos").replaceChildren(...avisos);
 
     // Um cartão por processo
@@ -1175,13 +1257,15 @@ function criarProgresso(el, tituloBase = document.title) {
       .map(k => cartaoProcesso(k, porProcesso[k], variosCanais)));
     $("vazio").hidden = true;
 
-    const n = lida.length;
+    const n = presentes.length;
+    const a = albuns.length ? ` e ${fmt(albuns.length)} álbu${albuns.length === 1 ? "m" : "ns"}` : "";
     if (desconhecidos.length) estado(`${fmt(n)} encomenda${s(n)}: há produtos por confirmar.`, "erro");
-    else estado(`Concluído: ${fmt(n)} encomenda${s(n)}.`, "ok");
+    else if (estadoAlbuns && estadoAlbuns[1] === "erro") estado(estadoAlbuns[0], "erro");
+    else estado(`Concluído: ${fmt(n)} encomenda${s(n)}${a}.`, "ok");
   }
 
   // Pesquisa no Explorador + tabela das encomendas de um conjunto de linhas (um processo ou um subprocesso)
-  function blocoEncomendas(k, linhas, variosCanais, nomeEstado) {
+  function blocoEncomendas(k, linhas, variosCanais, nomeEstado, rotuloCanal = "Canal") {
     const ids = [...new Set(linhas.map(l => Logica.orderId(l.enc)))];
     const grupos = Logica.gruposPesquisa(ids);
     const g = grupos.length;
@@ -1208,7 +1292,7 @@ function criarProgresso(el, tituloBase = document.title) {
     const tabela = el("table", {},
       el("thead", {}, el("tr", {},
         el("th", { textContent: "Encomenda" }),
-        variosCanais && el("th", { textContent: "Canal" }),
+        variosCanais && el("th", { textContent: rotuloCanal }),
         el("th", { textContent: "Categoria › Produto" }),
         el("th", { textContent: "Qtd", style: "text-align:center" }))),
       el("tbody", {}, ...linhas.map(l => el("tr", { title: l.regra },
@@ -1257,6 +1341,74 @@ function criarProgresso(el, tituloBase = document.title) {
             botaoCopiar("Copiar nºs", "btn pequeno", () => pastasBloco.join("\n"))),
           ...blocoEncomendas(k, ls, variosCanais, `${P.nome} › ${nome}`));
       }));
+  }
+
+  // ------------------------------------------------------------------ álbuns (1.13)
+  // Cada encomenda de álbum vai para a pasta da sua categoria. Lê só os nomes das pastas; não move nada:
+  // a pesquisa do Explorador encontra as pastas por mover, e o operador arrasta-as para a pasta da categoria.
+  // Devolve [texto, tipo] para o estado.
+  function analisarAlbuns(albuns, avisosExtra = []) {
+    const plano = Logica.planoAlbuns(albuns);
+    const categorias = [...Logica.CATEGORIAS_ALBUNS, Logica.SIGNATURE];
+    const porMover = plano.filter(p => p.destino && !p.noSitio);
+    const noSitio = plano.filter(p => p.noSitio);
+    const porConfirmar = plano.filter(p => !p.destino);
+    const linha = p => {
+      const np = p.produto ? Logica.lerNomeProduto(p.produto) : { categoria: "", produto: "(sem pasta de produto)", qtd: 1 };
+      return { enc: p.enc, canal: p.canal, categoria: np.categoria, produto: np.produto, qtd: np.qtd, origem: "pasta",
+        regra: p.destino ? `Pasta da categoria: ${p.destino}` : p.varios ? "Mais do que um álbum com categorias diferentes: confirmar" : "Categoria sem regra: confirmar com o responsável" };
+    };
+
+    // Resumo
+    const stat = (n, texto, classe = "") => el("div", { className: `card stat ${classe}` }, el("b", { textContent: fmt(n) }), el("span", { textContent: texto }));
+    $("stats-albuns").replaceChildren(stat(plano.length, "Álbuns"), stat(porMover.length, "Por mover", "p-ALBUM"),
+      stat(noSitio.length, "Já na pasta certa"), ...(porConfirmar.length ? [stat(porConfirmar.length, "Por confirmar", "p-DESCONHECIDO")] : []));
+    $("stats-albuns").hidden = false;
+
+    // Avisos
+    const avisos = [...avisosExtra];
+    if (porConfirmar.length) {
+      const n = porConfirmar.length;
+      avisos.push(el("div", { className: "aviso erro", role: "alert" },
+        el("b", { textContent: `${n} álbu${n === 1 ? "m" : "ns"} sem categoria. ` }), "Confirmar com o responsável e separar à mão:",
+        el("ul", {}, ...porConfirmar.map(p => el("li", { textContent: `${p.enc}: ${p.produto ? Logica.lerNomeProduto(p.produto).nome : "sem pasta de produto"}` })))));
+    }
+    const trocados = plano.filter(p => p.outraCategoria && p.destino);
+    if (trocados.length) {
+      const n = trocados.length;
+      avisos.push(el("div", { className: "aviso info" },
+        el("b", { textContent: `${n} álbu${n === 1 ? "m" : "ns"} na pasta de outra categoria. ` }), "Já entra" + (n === 1 ? "" : "m") + " na pesquisa da categoria certa:",
+        el("ul", {}, ...trocados.map(p => el("li", { textContent: `${p.enc}: está em ${p.canal}, vai para ${p.destino}` })))));
+    }
+    $("avisos-albuns").replaceChildren(...avisos);
+
+    // Um cartão por categoria (pela ordem da lista), e no fim os por confirmar
+    const cartoes = [];
+    for (const c of categorias) {
+      const mover = porMover.filter(p => p.destino === c);
+      const la = noSitio.filter(p => p.destino === c).length;
+      if (!mover.length && !la) continue;
+      const pastas = mover.map(p => p.enc);
+      const topo = el("div", { className: "processo-topo" },
+        el("div", {}, el("h3", { textContent: `${c} · ${fmt(mover.length)} por mover` }),
+          la ? el("div", { className: "dica", textContent: `${fmt(la)} já ${la === 1 ? "está" : "estão"} nesta pasta` }) : null),
+        mover.length ? botaoCopiar("Copiar nºs", "btn pequeno", () => pastas.join("\n")) : null);
+      cartoes.push(el("section", { className: "card processo p-ALBUM" }, topo,
+        mover.length ? el("div", { className: "processo-corpo" }, ...blocoEncomendas("ALBUM", mover.map(linha), true, c, "Está em"))
+          : el("div", { className: "processo-corpo" }, el("div", { className: "dica", textContent: "Nada por mover." }))));
+    }
+    if (porConfirmar.length) {
+      cartoes.push(el("section", { className: "card processo p-DESCONHECIDO" },
+        el("div", { className: "processo-topo" }, el("h3", { textContent: `Por confirmar · ${fmt(porConfirmar.length)}` })),
+        el("div", { className: "processo-corpo" }, ...blocoEncomendas("DESCONHECIDO", porConfirmar.map(linha), true, "Álbuns por confirmar", "Está em"))));
+    }
+    $("categorias-albuns").replaceChildren(...cartoes);
+    $("vazio-albuns").hidden = true;
+
+    const n = plano.length;
+    if (porConfirmar.length) return [`${fmt(n)} álbu${n === 1 ? "m" : "ns"}: há álbuns por confirmar.`, "erro"];
+    if (!porMover.length) return [`${fmt(n)} álbu${n === 1 ? "m" : "ns"}: tudo já está nas pastas certas.`, "ok"];
+    return [`Concluído: ${fmt(n)} álbu${n === 1 ? "m" : "ns"}, ${fmt(porMover.length)} por mover.`, "ok"];
   }
 
   $("btn-analisar").addEventListener("click", analisar);
@@ -1309,6 +1461,15 @@ function criarProgresso(el, tituloBase = document.title) {
     el("p", { textContent: "Por esta ordem; ganha a primeira que bate. «Com Margem» é sempre GIFTS; «Sem Margem», «Polar», «Frente e Verso» e mantas são sempre BMJCP, em qualquer tamanho. O que não é BMJCP é GIFTS." }),
     tabelaSimples(["#", "Bate quando o nome…", "Processo", "Exemplos"],
       REGRAS_BMJCP.map(r => [r.id, r.quando, pill(r.processo), r.exemplos])),
-    el("p", {}, "Exceções BMJCP (nome exato): ", ...EXCECOES_BMJCP.flatMap((x, i) => [i ? ", " : "", el("code", { textContent: x })]), "."));
+    el("p", {}, "Exceções BMJCP (nome exato): ", ...EXCECOES_BMJCP.flatMap((x, i) => [i ? ", " : "", el("code", { textContent: x })]), "."),
+    el("h3", { textContent: "Álbuns (separador Álbuns)" }),
+    el("p", { textContent: "Pastas de produto «Premium › …» e «Probook › …»: a pasta da categoria é o nome do produto sem o «FPX», em maiúsculas. Uma categoria fora desta lista fica por confirmar. O SIGNATURE_INSCRIPTION já vem separado." }),
+    tabelaSimples(["Pasta de produto", "Pasta da categoria"], [
+      ...Logica.CATEGORIAS_ALBUNS.map(c => {
+        const nome = c.toLowerCase().replace(/\b[a-z]/g, x => x.toUpperCase()); // "Big Landscape 40x30 400gr"
+        return [`Premium › ${nome} · Probook › ${nome} FPX`, el("code", { textContent: c })];
+      }),
+      ["Signature Collection Inscription › Signature Inscription …", el("code", { textContent: Logica.SIGNATURE })],
+    ]));
 })();
 </script>
