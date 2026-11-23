@@ -216,7 +216,6 @@ const casosCal = [
   ["Posters › Poster A4 - Frente", "Gesso", "OFFSET"],                  // o acabamento não muda outros produtos
   // Card Shop nunca segue a regra do acabamento, mesmo em Tintoretto Gesso (decisão do utilizador, 2026-11-17)
   ["Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)", "Tintoretto Gesso", "OFFSET/CARTOES"],
-  ["Card Shop - Postais Especiais › 20x10 (Horizontal) (Qtd. Min. 6)", "Gesso", "OFFSET/CARTOES"],
   ["Card Shop - Calendários › Calendário Mesa 10x15", "Tintoretto Gesso", "OFFSET/CARTOES"],
   ["Card Shop › Calendário Poster 30x42", "Gesso", "OFFSET/CARTOES"],
 ];
@@ -231,6 +230,49 @@ for (const f of ["6534871_1519619_complete.pdf", "complete.pdf", "6534871_151961
 if (Logica.ordemEtiquetas([{ ficheiro: "6534871_1519619_complete.pdf" }, { ficheiro: "6534871_1519619_label.pdf" }]).length !== 1) falhar("ordemEtiquetas com complete.pdf");
 if (Logica.produtosDaEncomenda("6534871_1519619", [], [], [{ ficheiro: "6534871_1519619_complete.pdf", qtd: 1 }]).length) falhar("complete.pdf deu um produto");
 console.log("ok  calendários (acabamento → OFFSET › CALENDÁRIOS / ESAG; madeira → OMEGA; complete.pdf ignorado)");
+
+// ---------------------------------------------------------------- Convites / Trifold Especiais pelo tipo de papel (1.12)
+// Decisão do utilizador (2026-11-23): em Gesso -> ESAG; noutro papel -> OFFSET › CARTÕES; sem papel lido -> Por confirmar.
+// Também os Postais Especiais (etiqueta 6539847_1531785).
+// Texto como o pdf.js da app o tira das etiquetas reais 6540634_1534317 e 6525862_1502054.
+const etqConvite = ["Item   Produtos   Acabamentos   Qtd ", "2962723   ... - Card Shop - Convites Especiais - 15x15 (Qtd. Min. 4) ",
+  "Tipo de Papel: ", "Design: ", "Correção de cor: ", "Tintoretto Gesso", "Cookie", "Não", "8 ",
+  "Ficheiros de:   6540634_1534317 - 15x15 (Ctd. Min. 4)"].join("\n");
+const etqTrifold = ["Item   Produtos   Acabamentos   Qtd ", "2896527   ...o - Card Shop - Trifold Especiais - 10x15 (Qtd. Min. 2) ",
+  "Tipo de Papel: ", "Design: ", "Envelope: ", "Correção de cor: ", "Tintoretto Gesso", "Curve", "Sim", "Não", "20 "].join("\n");
+for (const t of [etqConvite, etqTrifold])
+  if (Logica.papelDaEtiqueta(t) !== "Tintoretto Gesso") falhar(`papelDaEtiqueta deu ${Logica.papelDaEtiqueta(t)}`);
+if (Logica.acabamentoDaEtiqueta(etqConvite) !== null) falhar("acabamentoDaEtiqueta não devia ler o Tipo de Papel");
+if (Logica.papelDaEtiqueta(etqAc("True White")) !== null) falhar("papelDaEtiqueta inventou um papel numa etiqueta de calendário");
+const esp = (nome, papel) => { const r = Logica.classificar(nome, papel === undefined ? null : { papel }); return `${r.processo}${r.sub ? "/" + r.sub : ""}`; };
+const casosEsp = [
+  ["Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", "Tintoretto Gesso", "ESAG"],
+  ["Card Shop - Convites Especiais #U203a 15x15 (Qtd. Min. 4)", "Gesso", "ESAG"],
+  ["Card Shop - Trifold Especiais › 10x15 (Qtd. Min. 2)", "Tintoretto Gesso", "ESAG"],
+  ["Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4)", "Tintoretto Gesso", "ESAG"],
+  ["Card Shop - Postais Especiais › 20x10 (Horizontal) (Qtd. Min. 6)", "Gesso", "ESAG"],
+  ["Card Shop - Postais Especiais › 20x10 (Horizontal) (Qtd. Min. 6)", "True White", "OFFSET/CARTOES"],
+  ["Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", "True White", "OFFSET/CARTOES"],   // outro papel: continua nos CARTÕES
+  ["Card Shop - Trifold Especiais › 10x15 (Qtd. Min. 2)", "Sirio Ice White", "OFFSET/CARTOES"],
+  ["Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", undefined, "DESCONHECIDO"],      // sem etiqueta: nunca adivinhar
+  ["Card Shop - Trifold Especiais › 10x15 (Qtd. Min. 2)", undefined, "DESCONHECIDO"],
+  ["Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", "", "DESCONHECIDO"],
+  // O "Acabamento" não conta para estes; e o papel não muda o resto do Card Shop nem os calendários
+  ["Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", null, "DESCONHECIDO"],
+  ["Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)", "Tintoretto Gesso", "OFFSET/CARTOES"],
+  ["Card Shop - Convites Dípticos › 15x15 Díptico (Qtd. Min. 8)", "Tintoretto Gesso", "OFFSET/CARTOES"],
+  ["Poster › Calendário Poster 30x42", "Tintoretto Gesso", "DESCONHECIDO"],
+];
+for (const [nome, papel, esperado] of casosEsp) if (esp(nome, papel) !== esperado) falhar(`"${nome}" em papel ${papel} devia ser ${esperado} (deu ${esp(nome, papel)})`);
+if (cal("Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)", "Tintoretto Gesso") !== "DESCONHECIDO") falhar("Convites Especiais: o Acabamento não pode substituir o Tipo de Papel");
+if (Logica.campoDaEtiqueta("Card Shop - Convites Especiais › 15x15 (Qtd. Min. 4)") !== "papel"
+  || Logica.campoDaEtiqueta("Card Shop - Trifold Especiais › 10x15 (Qtd. Min. 2)") !== "papel"
+  || Logica.campoDaEtiqueta("Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4)") !== "papel"
+  || Logica.campoDaEtiqueta("Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)") !== null) falhar("campoDaEtiqueta (papel)");
+const etqPostal = ["Item   Produtos   Acabamentos   Qtd ", "2958005   ... - Postais Especiais - 15x20 (Horizontal) (Qtd. Min. 4) ",
+  "Tipo de Papel: ", "Design: ", "Correção de cor: ", "Tintoretto Gesso", "Cookie", "Não", "68 "].join("\n");
+if (Logica.papelDaEtiqueta(etqPostal) !== "Tintoretto Gesso") falhar(`papelDaEtiqueta (postal) deu ${Logica.papelDaEtiqueta(etqPostal)}`);
+console.log("ok  Convites / Trifold / Postais Especiais (Gesso → ESAG; outro papel → OFFSET › CARTÕES)");
 
 // ---------------------------------------------------------------- prefixo da encomenda (1.7)
 // Íman Quadrado: 1… e 3… -> OFFSET; 6… (outra loja) -> GIFTS (1.11.1; antes OMEGA); outro prefixo ou sem encomenda -> Por confirmar
@@ -259,7 +301,7 @@ if (Logica.classificar("Capa Fotos Natalícia (x25)").processo !== "OFFSET") fal
 if (Logica.produtosDaEncomenda("6537695_1526206 - Capa Fotos", ["Natal › Capa Fotos Natalícia Person. 15x20 (x25)"])[0].origem !== "pasta") falhar("a pasta de produto devia mandar");
 if (Logica.produtosDaEncomenda("6537695_1526206 - Capa Fotos", [], ["Natal › Bola de Natal"])[0].origem !== "etiqueta") falhar("a etiqueta devia mandar");
 // Subprocesso CARTÕES (pasta "OFFSET - SUB CATEGORIA CARTÕES") e o resto do OFFSET
-for (const n of ["Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)", "Card Shop - Trifold Especiais › 10x15 (Qtd. Min. 2)",
+for (const n of ["Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)",
   "Christmas Cards › Christmas Cover Premium", "Convites › Postal 15x20 em True White Matte", "Postais › Postal 10x15 em True White Matte",
   "Cartões › Cartão 10 x 15 cm", "Cartões Visita › Cartões de Visita"]) {
   const r = Logica.classificar(n);
