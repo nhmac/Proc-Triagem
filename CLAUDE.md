@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.12
+- **Versão atual:** web 1.13
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -353,6 +353,30 @@ normalizado; ganha a primeira que bate:
   (pela ordem certa), um caso no anexo e corre-se os testes. Os produtos novos que caírem numa regra
   por semelhança (por exemplo um peluche novo) devem ser mostrados ao utilizador para confirmar.
 
+### Álbuns: separação por categoria (desde a 1.13)
+
+Pedido do utilizador (2026-11-23): todos os dias as pastas de encomenda dos álbuns amadores eram separadas à mão
+pelas pastas de categoria da pasta do dia. A app **não move nada** (continua só de leitura): diz para onde vai
+cada pasta e dá a pesquisa do Explorador por categoria; o operador seleciona **as pastas** nos resultados (as
+etiquetas e as capas dentro delas também aparecem na pesquisa, porque têm o nº no nome) e arrasta-as.
+
+- **Álbum** = pasta de produto da categoria `Premium ›` (encomendas 3…), `Probook ›` (Fotoprix 10…, com "FPX" no
+  fim) ou `Signature …`. Também conta uma encomenda sem pasta de produto que já esteja dentro de uma pasta de
+  categoria (as do SIGNATURE_INSCRIPTION vêm assim).
+- **Categoria** = o nome do produto sem o "FPX", em maiúsculas: `Probook › Big Square 30x30 800gr FPX` →
+  `BIG SQUARE 30x30 800GR`. Só valem as de `CATEGORIAS_ALBUNS` (BIG LANDSCAPE 40x30, BIG SQUARE 30x30, MID SQUARE
+  25x25, cada uma em 400GR e 800GR); outra fica "Por confirmar". `Signature …` → `SIGNATURE_INSCRIPTION`, que já
+  vem separado pelo software (o utilizador: "é o único caso que já está automatizado").
+- Premium e Fotoprix ficam misturados na mesma pasta de categoria ("o que importa é agrupar todos os álbuns nas
+  categorias corretas").
+- No **Analisar**, as encomendas de álbum vão para o separador **Álbuns** e as outras seguem as regras de
+  Presentes Personalizados (separador Encomendas). Uma pasta só com álbuns abre logo o separador Álbuns.
+- Separador Álbuns: resumo (álbuns, por mover, já na pasta certa, por confirmar), avisos (sem categoria; dentro
+  da pasta de outra categoria) e um cartão por categoria com a pesquisa do Explorador só das pastas **por mover**
+  e a coluna "Está em".
+- Lógica: `CATEGORIAS_ALBUNS`, `SIGNATURE`, `ehAlbum`, `destinoAlbum`, `ehPastaCategoriaAlbum`, `ehEncomendaAlbum`,
+  `planoAlbuns`. Conferida com o lote "zzOUTROS" (a separação manual do utilizador, 14 álbuns: 14 certos).
+
 ## A página
 
 Linguagem da família, igual ao Proc-Scanner: dark mode, Inter, sidebar à esquerda com o botão verde em
@@ -454,6 +478,9 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13** (2026-11-23): **separador Álbuns** (ver "Álbuns: separação por categoria"), a pedido do utilizador: em vez de
+  separar à mão as pastas dos álbuns Premium / Probook FPX pelas pastas de categoria, a app diz a categoria de cada
+  uma e dá a pesquisa do Explorador por categoria. Só leitura, como o resto.
 - **1.12** (2026-11-23): **Convites, Trifold e Postais Especiais (Card Shop) em Gesso → ESAG**, a pedido do utilizador
   (etiquetas `6540634_1534317`, `6525862_1502054`, `6539847_1531785`, todas "Tipo de Papel: Tintoretto Gesso"). Regra nova 35
   (as seguintes sobem um número). Lê o **"Tipo de Papel:"** da etiqueta (`papelDaEtiqueta`, pela posição como o material e o

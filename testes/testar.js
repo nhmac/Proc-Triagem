@@ -274,6 +274,44 @@ const etqPostal = ["Item   Produtos   Acabamentos   Qtd ", "2958005   ... - Post
 if (Logica.papelDaEtiqueta(etqPostal) !== "Tintoretto Gesso") falhar(`papelDaEtiqueta (postal) deu ${Logica.papelDaEtiqueta(etqPostal)}`);
 console.log("ok  Convites / Trifold / Postais Especiais (Gesso → ESAG; outro papel → OFFSET › CARTÕES)");
 
+// ---------------------------------------------------------------- álbuns por categoria (1.13)
+// A categoria é o nome do produto sem o "FPX", em maiúsculas. Casos do lote "zzOUTROS" (separação manual do
+// utilizador, 2026-11-23); o SIGNATURE_INSCRIPTION já vem separado.
+const casosAlbum = [
+  ["Premium #U203a Big Landscape 40x30 400gr", "BIG LANDSCAPE 40x30 400GR"],
+  ["Probook › Big Landscape 40x30 800gr FPX", "BIG LANDSCAPE 40x30 800GR"],
+  ["Premium › Big Landscape 40x30 800gr", "BIG LANDSCAPE 40x30 800GR"],
+  ["Probook › Big Square 30x30 800gr FPX", "BIG SQUARE 30x30 800GR"],
+  ["Premium › Big Square 30x30 400gr", "BIG SQUARE 30x30 400GR"],
+  ["Premium › Mid Square 25x25 400gr", "MID SQUARE 25x25 400GR"],
+  ["Probook › Mid Square 25x25 800gr FPX", "MID SQUARE 25x25 800GR"],
+  ["Premium › Mid Square 25x25 800gr", "MID SQUARE 25x25 800GR"],
+  ["Signature Collection Inscription › Signature Inscription 40x30cm", "SIGNATURE_INSCRIPTION"],
+  ["Premium › Small Square 20x20 400gr", null],   // categoria que não existe: por confirmar
+  ["Premium › Big Landscape 40x30", null],        // sem gramagem: por confirmar
+];
+for (const [nome, esperado] of casosAlbum) {
+  if (!Logica.ehAlbum(nome)) falhar(`"${nome}" devia ser álbum`);
+  if (Logica.destinoAlbum(nome) !== esperado) falhar(`"${nome}" devia ir para ${esperado} (deu ${Logica.destinoAlbum(nome)})`);
+}
+for (const n of ["Canecas › Caneca Simples", "Card Shop - Convites › 15x20 (Vertical - Qtd. Min. 8)", "Horizontais › Landscape 31x23 (Aro 3cm)", "bola natal cores"])
+  if (Logica.ehAlbum(n)) falhar(`"${n}" não é álbum`);
+const plano = Logica.planoAlbuns([
+  { canal: "zzOUTROS", enc: "3482747_2071714", produtos: ["Premium › Mid Square 25x25 400gr"] },
+  { canal: "zzOUTROS", enc: "3482459_2071030 - URGENTE", produtos: ["Premium › Mid Square 25x25 400gr"] },
+  { canal: "MID SQUARE 25x25 400GR", enc: "3482816_2071965", produtos: ["Premium › Mid Square 25x25 400gr"] },   // já lá
+  { canal: "BIG SQUARE 30x30 800GR", enc: "3482840_2072042", produtos: ["Premium › Mid Square 25x25 800gr"] },   // na pasta errada
+  { canal: "SIGNATURE_INSCRIPTION", enc: "3482540_2071233", produtos: [] },                                     // automático, sem pasta de produto
+  { canal: "zzOUTROS", enc: "3482999_2079999", produtos: ["Premium › Small Square 20x20 400gr"] },              // por confirmar
+]);
+const resumo = plano.map(p => `${p.destino}|${p.noSitio}|${p.outraCategoria}`).join(" ");
+if (resumo !== "MID SQUARE 25x25 400GR|false|false MID SQUARE 25x25 400GR|false|false MID SQUARE 25x25 400GR|true|false "
+  + "MID SQUARE 25x25 800GR|false|true SIGNATURE_INSCRIPTION|true|false null|false|false") falhar(`planoAlbuns: ${resumo}`);
+if (!Logica.ehEncomendaAlbum({ canal: "SIGNATURE_INSCRIPTION", enc: "3482540_2071233", produtos: [] })) falhar("Signature sem pasta de produto devia ser álbum");
+if (Logica.ehEncomendaAlbum({ canal: "PRESENTES_PERSONALIZADOS - AMADOR", enc: "3480186_2064704", produtos: [] })) falhar("encomenda sem produto fora das categorias não é álbum");
+if (Logica.ehEncomendaAlbum({ canal: "X", enc: "1_2", produtos: ["Canecas › Caneca Simples"] })) falhar("caneca não é álbum");
+console.log("ok  álbuns por categoria (Premium e Probook FPX; Signature já separado)");
+
 // ---------------------------------------------------------------- prefixo da encomenda (1.7)
 // Íman Quadrado: 1… e 3… -> OFFSET; 6… (outra loja) -> GIFTS (1.11.1; antes OMEGA); outro prefixo ou sem encomenda -> Por confirmar
 const iq = "Ímanes › Íman Quadrado";
