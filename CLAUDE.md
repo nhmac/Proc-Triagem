@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13
+- **Versão atual:** web 1.13.1
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -292,6 +292,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 47 | contém `calendario` + poster, parede, mesa ou bolso: depende do acabamento na etiqueta (o Card Shop nunca chega aqui: fica nos CARTÕES ou no ESAG, regras 35 e 36) | True White, Sirio Ice White → OFFSET › CALENDÁRIOS; Gesso, Tintoretto Gesso → ESAG; outro acabamento ou sem etiqueta → Por confirmar | Poster › Calendário Poster 30x42; Parede › Calendário Parede 30x42, 21x29; Mesa › Calendário Mesa 10x15, 14x14, 21x10; Bolso › Calendário Bolso 5,5x8,5 |
 | 48 | contém `voucher` | OFFSET | Vouchers Marketing › Voucher Marketing |
 | 49 | contém `modern wall frame` ou `frame digital`, ou da categoria `Christmas Products ›` ou `K-Line ›` | OMEGA | Comunhões › Modern Wall Frame Comunhões 40x40; Christmas Decor › Christmas Desk Frame Digital 20x20; Christmas Decor › Christmas Frame Digital 30x40 - Double; Christmas Products › Casa, Presente; K-Line › Tamanho não Standard |
+| 50 | contém `paper folio armonia` | OFFSET | Comunhões › Paper Folio Armonia (1.13.1) |
 | — | nenhuma regra bate | **Por confirmar** | |
 
 ### Almofadas, mantas e bonecos: regras B1-B9 (regra 9; decididas pelo utilizador a 2026-11-12)
@@ -478,6 +479,8 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.1** (2026-11-24): "Comunhões › Paper Folio Armonia" → OFFSET (regra 50, `paper folio armonia`), a pedido do
+  utilizador. Regra estreita: outro Paper Folio fica "Por confirmar".
 - **1.13** (2026-11-23): **separador Álbuns** (ver "Álbuns: separação por categoria"), a pedido do utilizador: em vez de
   separar à mão as pastas dos álbuns Premium / Probook FPX pelas pastas de categoria, a app diz a categoria de cada
   uma e dá a pesquisa do Explorador por categoria. Só leitura, como o resto.
@@ -876,5 +879,6 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Hexágono › Hexágono 30x30 | OMEGA |
 | Moldura Rustic › Moldura Rustic 15 x 20 cm | OMEGA |
 | Moldura Makalu › Moldura Makalu 10 x 15 cm | OMEGA |
+| Comunhões › Paper Folio Armonia | OFFSET |
 | Poster › Calendário Poster 30x42 | DESCONHECIDO |
 | Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4) | DESCONHECIDO |
