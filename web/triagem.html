@@ -280,7 +280,7 @@
 
     <div class="rodape">
       <button class="btn-principal" id="btn-analisar" type="button">Analisar</button>
-      <div class="versao">Versão web 1.13</div>
+      <div class="versao">Versão web 1.13.1</div>
     </div>
   </aside>
 
@@ -447,6 +447,7 @@ const Logica = (() => {
       ] },
     { quando: "contém «voucher»", processo: "OFFSET", exemplos: "Vouchers Marketing › Voucher Marketing", teste: n => /voucher/.test(n) },
     { quando: "contém «modern wall frame» ou «frame digital», ou é da categoria «Christmas Products ›» ou «K-Line ›»", processo: "OMEGA", exemplos: "Comunhões › Modern Wall Frame Comunhões 40x40; Christmas Decor › Christmas Desk Frame Digital 20x20; Christmas Decor › Christmas Frame Digital 30x40 - Double; Christmas Products › Casa, Presente; K-Line › Tamanho não Standard", teste: n => /modern wall frame|frame digital|^christmas products ›|^k-?line ›/.test(n) },
+    { quando: "contém «paper folio armonia»", processo: "OFFSET", exemplos: "Comunhões › Paper Folio Armonia", teste: n => /paper folio armonia/.test(n) },
   ];
 
   // Nomes vindos de um ZIP trazem os caracteres escapados: "#U203a" -> "›"
