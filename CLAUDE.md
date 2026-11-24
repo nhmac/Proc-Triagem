@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.2
+- **Versão atual:** web 1.13.3
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -293,6 +293,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 48 | contém `voucher` | OFFSET | Vouchers Marketing › Voucher Marketing |
 | 49 | contém `modern wall frame` ou `frame digital`, ou da categoria `Christmas Products ›` ou `K-Line ›` | OMEGA | Comunhões › Modern Wall Frame Comunhões 40x40; Christmas Decor › Christmas Desk Frame Digital 20x20; Christmas Decor › Christmas Frame Digital 30x40 - Double; Christmas Products › Casa, Presente; K-Line › Tamanho não Standard |
 | 50 | contém `paper folio armonia` | OFFSET | Comunhões › Paper Folio Armonia (1.13.1) |
+| 51 | contém `estrela de natal` (não são os Ornamentos nem os Ímãs de Natal em estrela, que são OMEGA) | OFFSET | Christmas Gifts › Estrela de Natal (1.13.3) |
 | — | nenhuma regra bate | **Por confirmar** | |
 
 ### Almofadas, mantas e bonecos: regras B1-B9 (regra 9; decididas pelo utilizador a 2026-11-12)
@@ -479,6 +480,8 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.3** (2026-11-24): "Christmas Gifts › Estrela de Natal" → OFFSET (regra 51, `estrela de natal`), a pedido do
+  utilizador. Regra estreita: "Ornamento de Natal - Estrela" e "Ímãs de Natal - Estrela" continuam OMEGA.
 - **1.13.2** (2026-11-24): "Moldura Kamet › Moldura Kamet 15 x 20 cm" → OMEGA (regra 41, Kamet), a pedido do utilizador.
 - **1.13.1** (2026-11-24): "Comunhões › Paper Folio Armonia" → OFFSET (regra 50, `paper folio armonia`), a pedido do
   utilizador. Regra estreita: outro Paper Folio fica "Por confirmar".
@@ -882,5 +885,7 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Moldura Makalu › Moldura Makalu 10 x 15 cm | OMEGA |
 | Comunhões › Paper Folio Armonia | OFFSET |
 | Moldura Kamet › Moldura Kamet 15 x 20 cm | OMEGA |
+| 6541154_1535741 :: Christmas Gifts › Estrela de Natal | OFFSET |
+| Christmas Gifts › Estrela de Natal | OFFSET |
 | Poster › Calendário Poster 30x42 | DESCONHECIDO |
 | Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4) | DESCONHECIDO |
