@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.1
+- **Versão atual:** web 1.13.2
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -283,7 +283,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 38 | contém `acrilico` ou `acrilica` | OMEGA | Acrílico › 30x45; Quadro em Acrílico › Quadro Acrílico 15 x 20 cm; Molduras Acrílicas 20mm › 15x20; Standup Acrilico - Comunhões › 10x15 |
 | 39 | contém `madeira natural`, `quadro em madeira`, `folio de madeira` ou `wood edge panel` | OMEGA | Madeira Natural › 30x30; Quadro em Madeira › Quadro em Madeira 30 x 45 cm; Fólio de Madeira › 10x15; Wood Edge Panel › 40x60 |
 | 40 | contém `dibond`, `aluminio`, `design clear`, `quadro adesivo`, `shapes ›`, `hexagono` ou da categoria `Círculo ›` | OMEGA | Dibond › Tamanho não Standard; Quadro em Alumínio › Quadro alumínio 30x45; Design Clear 15x20; Quadro Adesivo 20x20; Shapes › 30x30 - Círculo; Círculo › Círculo 50x50; Hexágono › Hexágono 30x30 |
-| 41 | contém `moldura` + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Hayes, Makalu, Nature, Pokalde, Ridge, Rustic, Shake, Whistler, Yangra, ou `moldura para arvore` | OMEGA | Moldura Rustic 15 x 20 cm; Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Yangra 15x20; Moldura Fusion › 20x25; Moldura Whistler 15 x 20 cm; Natal › Moldura para Árvore de Natal |
+| 41 | contém `moldura` + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Hayes, Kamet, Makalu, Nature, Pokalde, Ridge, Rustic, Shake, Whistler, Yangra, ou `moldura para arvore` | OMEGA | Moldura Rustic 15 x 20 cm; Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Yangra 15x20; Moldura Fusion › 20x25; Moldura Kamet 15 x 20 cm; Moldura Whistler 15 x 20 cm; Natal › Moldura para Árvore de Natal |
 | 42 | contém `christmas wall gallery`, `christmas photo trail`, `christmas semi frame` ou `enfeite de natal` | OMEGA | Christmas Decor › Christmas Wall Gallery; Christmas Photo Trail; Christmas Semi Frame 20x15; Natal › Enfeite de Natal em forma de Presente |
 | 43 | contém `suporte 15x20` | OMEGA | Suporte 15x20 (pastas «… - Passepartout C») |
 | 44 | contém `cartao de visita` ou `cartoes visita` | OFFSET › CARTÕES | Cartões Visita › Cartões de Visita |
@@ -479,6 +479,7 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.2** (2026-11-24): "Moldura Kamet › Moldura Kamet 15 x 20 cm" → OMEGA (regra 41, Kamet), a pedido do utilizador.
 - **1.13.1** (2026-11-24): "Comunhões › Paper Folio Armonia" → OFFSET (regra 50, `paper folio armonia`), a pedido do
   utilizador. Regra estreita: outro Paper Folio fica "Por confirmar".
 - **1.13** (2026-11-23): **separador Álbuns** (ver "Álbuns: separação por categoria"), a pedido do utilizador: em vez de
@@ -880,5 +881,6 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Moldura Rustic › Moldura Rustic 15 x 20 cm | OMEGA |
 | Moldura Makalu › Moldura Makalu 10 x 15 cm | OMEGA |
 | Comunhões › Paper Folio Armonia | OFFSET |
+| Moldura Kamet › Moldura Kamet 15 x 20 cm | OMEGA |
 | Poster › Calendário Poster 30x42 | DESCONHECIDO |
 | Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4) | DESCONHECIDO |
