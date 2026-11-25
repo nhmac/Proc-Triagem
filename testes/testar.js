@@ -289,6 +289,9 @@ const casosAlbum = [
   ["Signature Collection Inscription › Signature Inscription 40x30cm", "SIGNATURE_INSCRIPTION"],
   ["Premium › Small Square 20x20 400gr", null],   // categoria que não existe: por confirmar
   ["Premium › Big Landscape 40x30", null],        // sem gramagem: por confirmar
+  ["Fotolibro Plus › Mid Square 25x25 400gr FPX", "MID SQUARE 25x25 400GR"],   // 1.13.5
+  ["Fotolibro Plus › Mid Square 25x25 800gr FPX", null],   // Fotolibro Plus: só o Mid Square 400gr tem regra
+  ["Fotolibro Plus › Big Square 30x30 400gr FPX", null],
 ];
 for (const [nome, esperado] of casosAlbum) {
   if (!Logica.ehAlbum(nome)) falhar(`"${nome}" devia ser álbum`);
@@ -310,7 +313,7 @@ if (resumo !== "MID SQUARE 25x25 400GR|false|false MID SQUARE 25x25 400GR|false|
 if (!Logica.ehEncomendaAlbum({ canal: "SIGNATURE_INSCRIPTION", enc: "3482540_2071233", produtos: [] })) falhar("Signature sem pasta de produto devia ser álbum");
 if (Logica.ehEncomendaAlbum({ canal: "PRESENTES_PERSONALIZADOS - AMADOR", enc: "3480186_2064704", produtos: [] })) falhar("encomenda sem produto fora das categorias não é álbum");
 if (Logica.ehEncomendaAlbum({ canal: "X", enc: "1_2", produtos: ["Canecas › Caneca Simples"] })) falhar("caneca não é álbum");
-console.log("ok  álbuns por categoria (Premium e Probook FPX; Signature já separado)");
+console.log("ok  álbuns por categoria (Premium, Probook FPX e Fotolibro Plus; Signature já separado)");
 
 // ---------------------------------------------------------------- prefixo da encomenda (1.7)
 // Íman Quadrado: 1… e 3… -> OFFSET; 6… (outra loja) -> GIFTS (1.11.1; antes OMEGA); outro prefixo ou sem encomenda -> Por confirmar
