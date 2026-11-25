@@ -280,7 +280,7 @@
 
     <div class="rodape">
       <button class="btn-principal" id="btn-analisar" type="button">Analisar</button>
-      <div class="versao">Versão web 1.13.2</div>
+      <div class="versao">Versão web 1.13.5</div>
     </div>
   </aside>
 
@@ -431,7 +431,7 @@ const Logica = (() => {
     { quando: "contém «acrilico» ou «acrilica»", processo: "OMEGA", exemplos: "Acrílico › 30x45; Quadro em Acrílico › Quadro Acrílico 15 x 20 cm; Molduras Acrílicas 20mm › 15x20; Standup Acrilico - Comunhões › 10x15", teste: n => /acrilic[oa]/.test(n) },
     { quando: "contém «madeira natural», «quadro em madeira», «folio de madeira» ou «wood edge panel»", processo: "OMEGA", exemplos: "Madeira Natural › 30x30; Quadro em Madeira › Quadro em Madeira 30 x 45 cm; Fólio de Madeira › 10x15; Wood Edge Panel › 40x60", teste: n => /madeira natural|quadro em madeira|folio de madeira|wood edge panel/.test(n) },
     { quando: "contém «dibond», «aluminio», «design clear», «quadro adesivo», «shapes ›», «hexagono» ou da categoria «Círculo ›»", processo: "OMEGA", exemplos: "Dibond › Tamanho não Standard; Quadro em Alumínio › Quadro alumínio 30x45; Design Clear 15x20; Quadro Adesivo 20x20; Shapes › 30x30 - Círculo; Círculo › Círculo 50x50; Hexágono › Hexágono 30x30", teste: n => /dibond|aluminio|design clear|quadro adesivo|shapes ›|hexagono|^circulo ›/.test(n) },
-    { quando: "contém «moldura» + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Hayes, Kamet, Makalu, Nature, Pokalde, Ridge, Rustic, Shake, Whistler, Yangra, ou «moldura para arvore»", processo: "OMEGA", exemplos: "Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Fusion › 20x25; Moldura Kamet 15 x 20 cm; Moldura Makalu 10 x 15 cm; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Whistler 15 x 20 cm; Moldura Yangra 15x20; Natal › Moldura para Árvore de Natal", teste: n => /moldura (3d|andromeda|apalaches|denali|dome|fusion|hayes|kamet|makalu|nature|pokalde|ridge|rustic|shake|whistler|yangra|para arvore)/.test(n) },
+    { quando: "contém «moldura» + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Hayes, Hood, Kamet, Makalu, Nature, Pokalde, Pumori, Ridge, Rustic, Shake, Whistler, Yangra, ou «moldura para arvore»", processo: "OMEGA", exemplos: "Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Fusion › 20x25; Moldura Hood 13x18; Moldura Kamet 15 x 20 cm; Moldura Makalu 10 x 15 cm; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Pumori 10 x 15 cm; Moldura Whistler 15 x 20 cm; Moldura Yangra 15x20; Natal › Moldura para Árvore de Natal", teste: n => /moldura (3d|andromeda|apalaches|denali|dome|fusion|hayes|hood|kamet|makalu|nature|pokalde|pumori|ridge|rustic|shake|whistler|yangra|para arvore)/.test(n) },
     { quando: "contém «christmas wall gallery», «christmas photo trail», «christmas semi frame» ou «enfeite de natal»", processo: "OMEGA", exemplos: "Christmas Decor › Christmas Wall Gallery; Christmas Photo Trail; Christmas Semi Frame 20x15; Natal › Enfeite de Natal em forma de Presente", teste: n => /christmas (wall gallery|photo trail|semi frame)|enfeite de natal/.test(n) },
     { quando: "contém «suporte 15x20»", processo: "OMEGA", exemplos: "Suporte 15x20 (pastas «… - Passepartout C»)", teste: n => /suporte 15\s*x\s*20/.test(n) },
     { quando: "contém «cartao de visita» ou «cartoes visita»", processo: "OFFSET", sub: "CARTOES", exemplos: "Cartões Visita › Cartões de Visita", teste: n => /cartoes? (de )?visita/.test(n) },
@@ -448,6 +448,7 @@ const Logica = (() => {
     { quando: "contém «voucher»", processo: "OFFSET", exemplos: "Vouchers Marketing › Voucher Marketing", teste: n => /voucher/.test(n) },
     { quando: "contém «modern wall frame» ou «frame digital», ou é da categoria «Christmas Products ›» ou «K-Line ›»", processo: "OMEGA", exemplos: "Comunhões › Modern Wall Frame Comunhões 40x40; Christmas Decor › Christmas Desk Frame Digital 20x20; Christmas Decor › Christmas Frame Digital 30x40 - Double; Christmas Products › Casa, Presente; K-Line › Tamanho não Standard", teste: n => /modern wall frame|frame digital|^christmas products ›|^k-?line ›/.test(n) },
     { quando: "contém «paper folio armonia»", processo: "OFFSET", exemplos: "Comunhões › Paper Folio Armonia", teste: n => /paper folio armonia/.test(n) },
+    { quando: "contém «estrela de natal» (não são os Ornamentos nem os Ímãs de Natal em estrela, que são OMEGA)", processo: "OFFSET", exemplos: "Christmas Gifts › Estrela de Natal", teste: n => /estrela de natal/.test(n) },
   ];
 
   // Nomes vindos de um ZIP trazem os caracteres escapados: "#U203a" -> "›"
@@ -696,11 +697,14 @@ const Logica = (() => {
     "MID SQUARE 25x25 400GR", "MID SQUARE 25x25 800GR",
   ];
   const SIGNATURE = "SIGNATURE_INSCRIPTION";
+  // Fotolibro Plus (1.13.5, a pedido do utilizador, 2026-11-25): só os produtos desta lista têm categoria;
+  // outro "Fotolibro Plus › …" é álbum mas fica "Por confirmar" (regra estreita: nunca adivinhar).
+  const ALBUNS_FOTOLIBRO_PLUS = ["MID SQUARE 25x25 400GR"];
   const CATEGORIAS_ALBUNS_N = CATEGORIAS_ALBUNS.map(normalizar);
-  // Um álbum: a categoria da pasta de produto é "Premium", "Probook" ou "Signature …"
+  // Um álbum: a categoria da pasta de produto é "Premium", "Probook", "Fotolibro Plus" ou "Signature …"
   function ehAlbum(nomePasta) {
     const cat = normalizar(lerNomeProduto(nomePasta).categoria);
-    return /^(premium|probook|signature)\b/.test(cat);
+    return /^(premium|probook|fotolibro plus|signature)\b/.test(cat);
   }
   // Pasta de produto do álbum -> nome da pasta da categoria, ou null (sem regra)
   function destinoAlbum(nomePasta) {
@@ -708,7 +712,9 @@ const Logica = (() => {
     if (/^signature\b/.test(normalizar(p.categoria)) || /signature inscription/.test(normalizar(p.produto))) return SIGNATURE;
     const n = normalizar(p.produto).replace(/\s+fpx$/, "");
     const i = CATEGORIAS_ALBUNS_N.indexOf(n);
-    return i < 0 ? null : CATEGORIAS_ALBUNS[i];
+    if (i < 0) return null;
+    if (/^fotolibro plus\b/.test(normalizar(p.categoria)) && !ALBUNS_FOTOLIBRO_PLUS.includes(CATEGORIAS_ALBUNS[i])) return null;
+    return CATEGORIAS_ALBUNS[i];
   }
   const ehPastaCategoriaAlbum = nome => [...CATEGORIAS_ALBUNS_N, normalizar(SIGNATURE)].includes(normalizar(nome));
   // Uma encomenda lida ({ canal: pasta onde está, enc, produtos }) é de álbum se um produto for álbum, ou se,
@@ -734,7 +740,7 @@ const Logica = (() => {
   }
 
   return {
-    CATEGORIAS_ALBUNS, SIGNATURE, ehAlbum, destinoAlbum, ehPastaCategoriaAlbum, ehEncomendaAlbum, planoAlbuns,
+    CATEGORIAS_ALBUNS, ALBUNS_FOTOLIBRO_PLUS, SIGNATURE, ehAlbum, destinoAlbum, ehPastaCategoriaAlbum, ehEncomendaAlbum, planoAlbuns,
     PROCESSOS, SUBPROCESSOS, ORDEM, REGRAS, REGRAS_BMJCP, EXCECOES_BMJCP, normalizar, lerNomeProduto, classificar,
     ehPastaEncomenda, pareceEncomenda, orderId, qtdDaPasta, ehEtiqueta, produtoDaImagem, produtosDaEtiqueta,
     produtosDaEncomenda, semPastaDeProduto, ordemEtiquetas, produtoDoNomeDaEncomenda, precisaMaterial, campoDaEtiqueta, materialDaEtiqueta, acabamentoDaEtiqueta, papelDaEtiqueta, gruposPesquisa, LIMITE_PESQUISA, MAX_IDS_GRUPO,
@@ -1464,11 +1470,12 @@ function criarProgresso(el, tituloBase = document.title) {
       REGRAS_BMJCP.map(r => [r.id, r.quando, pill(r.processo), r.exemplos])),
     el("p", {}, "Exceções BMJCP (nome exato): ", ...EXCECOES_BMJCP.flatMap((x, i) => [i ? ", " : "", el("code", { textContent: x })]), "."),
     el("h3", { textContent: "Álbuns (separador Álbuns)" }),
-    el("p", { textContent: "Pastas de produto «Premium › …» e «Probook › …»: a pasta da categoria é o nome do produto sem o «FPX», em maiúsculas. Uma categoria fora desta lista fica por confirmar. O SIGNATURE_INSCRIPTION já vem separado." }),
+    el("p", { textContent: "Pastas de produto «Premium › …», «Probook › …» e «Fotolibro Plus › …» (este só no Mid Square 25x25 400gr): a pasta da categoria é o nome do produto sem o «FPX», em maiúsculas. Uma categoria fora desta lista fica por confirmar. O SIGNATURE_INSCRIPTION já vem separado." }),
     tabelaSimples(["Pasta de produto", "Pasta da categoria"], [
       ...Logica.CATEGORIAS_ALBUNS.map(c => {
         const nome = c.toLowerCase().replace(/\b[a-z]/g, x => x.toUpperCase()); // "Big Landscape 40x30 400gr"
-        return [`Premium › ${nome} · Probook › ${nome} FPX`, el("code", { textContent: c })];
+        const fotolibro = Logica.ALBUNS_FOTOLIBRO_PLUS.includes(c) ? ` · Fotolibro Plus › ${nome} FPX` : "";
+        return [`Premium › ${nome} · Probook › ${nome} FPX${fotolibro}`, el("code", { textContent: c })];
       }),
       ["Signature Collection Inscription › Signature Inscription …", el("code", { textContent: Logica.SIGNATURE })],
     ]));
