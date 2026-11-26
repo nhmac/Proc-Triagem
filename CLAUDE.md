@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.5
+- **Versão atual:** web 1.13.6
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -294,6 +294,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 49 | contém `modern wall frame` ou `frame digital`, ou da categoria `Christmas Products ›` ou `K-Line ›` | OMEGA | Comunhões › Modern Wall Frame Comunhões 40x40; Christmas Decor › Christmas Desk Frame Digital 20x20; Christmas Decor › Christmas Frame Digital 30x40 - Double; Christmas Products › Casa, Presente; K-Line › Tamanho não Standard |
 | 50 | contém `paper folio armonia` | OFFSET | Comunhões › Paper Folio Armonia (1.13.1) |
 | 51 | contém `estrela de natal` (não são os Ornamentos nem os Ímãs de Natal em estrela, que são OMEGA) | OFFSET | Christmas Gifts › Estrela de Natal (1.13.3) |
+| 52 | da categoria `Press Print ›` e contém `30x40`, `frente e verso` e `tintoretto gesso` (regra estreita: outro Press Print fica Por confirmar) | ESAG | Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso (1.13.6) |
 | — | nenhuma regra bate | **Por confirmar** | |
 
 ### Almofadas, mantas e bonecos: regras B1-B9 (regra 9; decididas pelo utilizador a 2026-11-12)
@@ -483,6 +484,8 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.6** (2026-11-26): "Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso" → ESAG (regra 52), a pedido do
+  utilizador. Regra estreita: outro produto Press Print (outro tamanho ou outro papel) fica "Por confirmar".
 - **1.13.5** (2026-11-25): "Moldura Hood › Moldura Hood 13x18" e "Moldura Pumori › Moldura Pumori 10 x 15 cm" → OMEGA
   (regra 41, Hood e Pumori); separador Álbuns: "Fotolibro Plus › Mid Square 25x25 400gr FPX" → MID SQUARE 25x25 400GR
   (só este produto Fotolibro Plus; outro fica "Por confirmar"). A pedido do utilizador.
@@ -895,5 +898,9 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Christmas Gifts › Estrela de Natal | OFFSET |
 | Moldura Hood › Moldura Hood 13x18 | OMEGA |
 | Moldura Pumori › Moldura Pumori 10 x 15 cm | OMEGA |
+| Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso | ESAG |
+| Press Print #U203a 30x40-Imp. Frente e Verso - Tintoretto Gesso | ESAG |
+| Press Print › 30x40-Imp. Frente e Verso - True White | DESCONHECIDO |
+| Press Print › 20x30-Imp. Frente e Verso - Tintoretto Gesso | DESCONHECIDO |
 | Poster › Calendário Poster 30x42 | DESCONHECIDO |
 | Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4) | DESCONHECIDO |
