@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.6
+- **Versão atual:** web 1.13.7
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -283,7 +283,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 38 | contém `acrilico` ou `acrilica` | OMEGA | Acrílico › 30x45; Quadro em Acrílico › Quadro Acrílico 15 x 20 cm; Molduras Acrílicas 20mm › 15x20; Standup Acrilico - Comunhões › 10x15 |
 | 39 | contém `madeira natural`, `quadro em madeira`, `folio de madeira` ou `wood edge panel` | OMEGA | Madeira Natural › 30x30; Quadro em Madeira › Quadro em Madeira 30 x 45 cm; Fólio de Madeira › 10x15; Wood Edge Panel › 40x60 |
 | 40 | contém `dibond`, `aluminio`, `design clear`, `quadro adesivo`, `shapes ›`, `hexagono` ou da categoria `Círculo ›` | OMEGA | Dibond › Tamanho não Standard; Quadro em Alumínio › Quadro alumínio 30x45; Design Clear 15x20; Quadro Adesivo 20x20; Shapes › 30x30 - Círculo; Círculo › Círculo 50x50; Hexágono › Hexágono 30x30 |
-| 41 | contém `moldura` + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Hayes, Hood, Kamet, Makalu, Nature, Pokalde, Pumori, Ridge, Rustic, Shake, Whistler, Yangra, ou `moldura para arvore` | OMEGA | Moldura Rustic 15 x 20 cm; Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Yangra 15x20; Moldura Fusion › 20x25; Moldura Kamet 15 x 20 cm; Moldura Whistler 15 x 20 cm; Moldura Hood 13x18; Moldura Pumori 10 x 15 cm; Natal › Moldura para Árvore de Natal |
+| 41 | contém `moldura` + 3D, Andromeda, Apalaches, Denali, Dome, Fusion, Gyala, Hayes, Hood, Kamet, Makalu, Nature, Pokalde, Pumori, Ridge, Rustic, Shake, Temple, Whistler, Yangra, ou `moldura para arvore` | OMEGA | Moldura Rustic 15 x 20 cm; Moldura 3D 15 x 15 cm; Moldura Andromeda 10X15; Moldura Dome 10x15; Moldura Nature 20 x 15 cm; Moldura Pokalde 15 x 20 cm; Moldura Yangra 15x20; Moldura Fusion › 20x25; Moldura Kamet 15 x 20 cm; Moldura Whistler 15 x 20 cm; Moldura Hood 13x18; Moldura Pumori 10 x 15 cm; Natal › Moldura para Árvore de Natal |
 | 42 | contém `christmas wall gallery`, `christmas photo trail`, `christmas semi frame` ou `enfeite de natal` | OMEGA | Christmas Decor › Christmas Wall Gallery; Christmas Photo Trail; Christmas Semi Frame 20x15; Natal › Enfeite de Natal em forma de Presente |
 | 43 | contém `suporte 15x20` | OMEGA | Suporte 15x20 (pastas «… - Passepartout C») |
 | 44 | contém `cartao de visita` ou `cartoes visita` | OFFSET › CARTÕES | Cartões Visita › Cartões de Visita |
@@ -372,7 +372,9 @@ etiquetas e as capas dentro delas também aparecem na pesquisa, porque têm o n�
   vem separado pelo software (o utilizador: "é o único caso que já está automatizado").
 - **Fotolibro Plus** (1.13.5, a pedido do utilizador, 2026-11-25): `Fotolibro Plus › Mid Square 25x25 400gr FPX` →
   `MID SQUARE 25x25 400GR`. Regra estreita (`ALBUNS_FOTOLIBRO_PLUS`): outro produto Fotolibro Plus é álbum mas fica
-  "Por confirmar" até o utilizador dizer a categoria.
+  "Por confirmar" até o utilizador dizer a categoria. Na 1.13.7 (2026-11-26, a pedido do utilizador) entraram também
+  `Fotolibro Plus › Big Landscape 40x30 400gr FPX` → `BIG LANDSCAPE 40x30 400GR` e `Fotolibro Plus › Big Square 30x30 400gr FPX`
+  → `BIG SQUARE 30x30 400GR`. Os 800gr Fotolibro Plus continuam "Por confirmar".
 - Premium e Fotoprix ficam misturados na mesma pasta de categoria ("o que importa é agrupar todos os álbuns nas
   categorias corretas").
 - No **Analisar**, as encomendas de álbum vão para o separador **Álbuns** e as outras seguem as regras de
@@ -484,6 +486,10 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.7** (2026-11-26): "Moldura Gyala › Moldura Gyala 15 X 15 cm" e "Moldura Temple › Moldura Temple 15 x 10 cm" → OMEGA
+  (regra 41, Gyala e Temple). Separador Álbuns: "Fotolibro Plus › Big Landscape 40x30 400gr FPX" → BIG LANDSCAPE 40x30 400GR e
+  "Fotolibro Plus › Big Square 30x30 400gr FPX" → BIG SQUARE 30x30 400GR (lista `ALBUNS_FOTOLIBRO_PLUS`). A pedido do utilizador.
+  Outro produto Fotolibro Plus (os 800gr) continua "Por confirmar".
 - **1.13.6** (2026-11-26): "Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso" → ESAG (regra 52), a pedido do
   utilizador. Regra estreita: outro produto Press Print (outro tamanho ou outro papel) fica "Por confirmar".
 - **1.13.5** (2026-11-25): "Moldura Hood › Moldura Hood 13x18" e "Moldura Pumori › Moldura Pumori 10 x 15 cm" → OMEGA
@@ -898,6 +904,8 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Christmas Gifts › Estrela de Natal | OFFSET |
 | Moldura Hood › Moldura Hood 13x18 | OMEGA |
 | Moldura Pumori › Moldura Pumori 10 x 15 cm | OMEGA |
+| Moldura Gyala › Moldura Gyala 15 X 15 cm | OMEGA |
+| Moldura Temple › Moldura Temple 15 x 10 cm | OMEGA |
 | Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso | ESAG |
 | Press Print #U203a 30x40-Imp. Frente e Verso - Tintoretto Gesso | ESAG |
 | Press Print › 30x40-Imp. Frente e Verso - True White | DESCONHECIDO |

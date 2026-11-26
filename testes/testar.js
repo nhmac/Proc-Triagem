@@ -290,8 +290,11 @@ const casosAlbum = [
   ["Premium › Small Square 20x20 400gr", null],   // categoria que não existe: por confirmar
   ["Premium › Big Landscape 40x30", null],        // sem gramagem: por confirmar
   ["Fotolibro Plus › Mid Square 25x25 400gr FPX", "MID SQUARE 25x25 400GR"],   // 1.13.5
-  ["Fotolibro Plus › Mid Square 25x25 800gr FPX", null],   // Fotolibro Plus: só o Mid Square 400gr tem regra
-  ["Fotolibro Plus › Big Square 30x30 400gr FPX", null],
+  ["Fotolibro Plus › Big Landscape 40x30 400gr FPX", "BIG LANDSCAPE 40x30 400GR"],   // 1.13.7
+  ["Fotolibro Plus › Big Square 30x30 400gr FPX", "BIG SQUARE 30x30 400GR"],         // 1.13.7
+  ["Fotolibro Plus › Mid Square 25x25 800gr FPX", null],   // Fotolibro Plus: só os 400gr destes três têm regra
+  ["Fotolibro Plus › Big Square 30x30 800gr FPX", null],
+  ["Fotolibro Plus › Big Landscape 40x30 800gr FPX", null],
 ];
 for (const [nome, esperado] of casosAlbum) {
   if (!Logica.ehAlbum(nome)) falhar(`"${nome}" devia ser álbum`);
