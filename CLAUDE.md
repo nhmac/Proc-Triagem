@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.6
+- **Versão atual:** web 1.13.7
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -372,7 +372,9 @@ etiquetas e as capas dentro delas também aparecem na pesquisa, porque têm o n�
   vem separado pelo software (o utilizador: "é o único caso que já está automatizado").
 - **Fotolibro Plus** (1.13.5, a pedido do utilizador, 2026-11-25): `Fotolibro Plus › Mid Square 25x25 400gr FPX` →
   `MID SQUARE 25x25 400GR`. Regra estreita (`ALBUNS_FOTOLIBRO_PLUS`): outro produto Fotolibro Plus é álbum mas fica
-  "Por confirmar" até o utilizador dizer a categoria.
+  "Por confirmar" até o utilizador dizer a categoria. Na 1.13.7 (2026-11-26, a pedido do utilizador) entraram também
+  `Fotolibro Plus › Big Landscape 40x30 400gr FPX` → `BIG LANDSCAPE 40x30 400GR` e `Fotolibro Plus › Big Square 30x30 400gr FPX`
+  → `BIG SQUARE 30x30 400GR`. Os 800gr Fotolibro Plus continuam "Por confirmar".
 - Premium e Fotoprix ficam misturados na mesma pasta de categoria ("o que importa é agrupar todos os álbuns nas
   categorias corretas").
 - No **Analisar**, as encomendas de álbum vão para o separador **Álbuns** e as outras seguem as regras de
@@ -484,6 +486,9 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.7** (2026-11-26): separador Álbuns: "Fotolibro Plus › Big Landscape 40x30 400gr FPX" → BIG LANDSCAPE 40x30 400GR e
+  "Fotolibro Plus › Big Square 30x30 400gr FPX" → BIG SQUARE 30x30 400GR (lista `ALBUNS_FOTOLIBRO_PLUS`). A pedido do utilizador.
+  Outro produto Fotolibro Plus (os 800gr) continua "Por confirmar".
 - **1.13.6** (2026-11-26): "Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso" → ESAG (regra 52), a pedido do
   utilizador. Regra estreita: outro produto Press Print (outro tamanho ou outro papel) fica "Por confirmar".
 - **1.13.5** (2026-11-25): "Moldura Hood › Moldura Hood 13x18" e "Moldura Pumori › Moldura Pumori 10 x 15 cm" → OMEGA

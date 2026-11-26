@@ -280,7 +280,7 @@
 
     <div class="rodape">
       <button class="btn-principal" id="btn-analisar" type="button">Analisar</button>
-      <div class="versao">Versão web 1.13.6</div>
+      <div class="versao">Versão web 1.13.7</div>
     </div>
   </aside>
 
@@ -703,7 +703,8 @@ const Logica = (() => {
   const SIGNATURE = "SIGNATURE_INSCRIPTION";
   // Fotolibro Plus (1.13.5, a pedido do utilizador, 2026-11-25): só os produtos desta lista têm categoria;
   // outro "Fotolibro Plus › …" é álbum mas fica "Por confirmar" (regra estreita: nunca adivinhar).
-  const ALBUNS_FOTOLIBRO_PLUS = ["MID SQUARE 25x25 400GR"];
+  // 1.13.7 (2026-11-26, a pedido do utilizador): também o Big Landscape 40x30 400gr e o Big Square 30x30 400gr.
+  const ALBUNS_FOTOLIBRO_PLUS = ["BIG LANDSCAPE 40x30 400GR", "BIG SQUARE 30x30 400GR", "MID SQUARE 25x25 400GR"];
   const CATEGORIAS_ALBUNS_N = CATEGORIAS_ALBUNS.map(normalizar);
   // Um álbum: a categoria da pasta de produto é "Premium", "Probook", "Fotolibro Plus" ou "Signature …"
   function ehAlbum(nomePasta) {
@@ -1474,7 +1475,7 @@ function criarProgresso(el, tituloBase = document.title) {
       REGRAS_BMJCP.map(r => [r.id, r.quando, pill(r.processo), r.exemplos])),
     el("p", {}, "Exceções BMJCP (nome exato): ", ...EXCECOES_BMJCP.flatMap((x, i) => [i ? ", " : "", el("code", { textContent: x })]), "."),
     el("h3", { textContent: "Álbuns (separador Álbuns)" }),
-    el("p", { textContent: "Pastas de produto «Premium › …», «Probook › …» e «Fotolibro Plus › …» (este só no Mid Square 25x25 400gr): a pasta da categoria é o nome do produto sem o «FPX», em maiúsculas. Uma categoria fora desta lista fica por confirmar. O SIGNATURE_INSCRIPTION já vem separado." }),
+    el("p", { textContent: "Pastas de produto «Premium › …», «Probook › …» e «Fotolibro Plus › …» (este só no Big Landscape 40x30 400gr, no Big Square 30x30 400gr e no Mid Square 25x25 400gr): a pasta da categoria é o nome do produto sem o «FPX», em maiúsculas. Uma categoria fora desta lista fica por confirmar. O SIGNATURE_INSCRIPTION já vem separado." }),
     tabelaSimples(["Pasta de produto", "Pasta da categoria"], [
       ...Logica.CATEGORIAS_ALBUNS.map(c => {
         const nome = c.toLowerCase().replace(/\b[a-z]/g, x => x.toUpperCase()); // "Big Landscape 40x30 400gr"
