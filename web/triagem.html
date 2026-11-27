@@ -280,7 +280,7 @@
 
     <div class="rodape">
       <button class="btn-principal" id="btn-analisar" type="button">Analisar</button>
-      <div class="versao">Versão web 1.13.7</div>
+      <div class="versao">Versão web 1.13.8</div>
     </div>
   </aside>
 
@@ -453,6 +453,10 @@ const Logica = (() => {
     // outro produto Press Print fica "Por confirmar".
     { quando: "é da categoria «Press Print ›» e contém «30x40», «frente e verso» e «tintoretto gesso»", processo: "ESAG", exemplos: "Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso",
       teste: n => /^press print ›/.test(n) && /30\s*x\s*40/.test(n) && /frente e verso/.test(n) && /tintoretto gesso/.test(n) },
+    // Calendário Standup (1.13.8, a pedido do utilizador, 2026-11-27). Regra estreita: só o 20x15 da categoria Standup;
+    // outro tamanho fica "Por confirmar". O "Standup Acrilico" é OMEGA (regra 38, antes desta).
+    { quando: "é da categoria «Standup ›» e contém «calendario standup 20x15»", processo: "ESAG", exemplos: "Standup › Calendário Standup 20x15",
+      teste: n => /^standup ›/.test(n) && /calendario standup 20\s*x\s*15/.test(n) },
   ];
 
   // Nomes vindos de um ZIP trazem os caracteres escapados: "#U203a" -> "›"
