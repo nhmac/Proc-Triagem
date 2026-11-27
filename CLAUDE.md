@@ -18,7 +18,7 @@ Personalizados**, a partir do **nome da pasta de produto** que está dentro da p
 
 - **App:** https://nhmac.github.io/Proc-Triagem/ (Chrome ou Edge; pode ser instalada como app)
 - **Repositório:** https://github.com/nhmac/Proc-Triagem (código-fonte no `main`; o site é gerado e publicado pelo GitHub Actions)
-- **Versão atual:** web 1.13.7
+- **Versão atual:** web 1.13.8
 
 **A app é só de leitura** (decisão do utilizador, 2026-11-12): em circunstância alguma altera, move,
 renomeia ou apaga ficheiros ou pastas. O `showDirectoryPicker` pede só `mode: "read"`, e o
@@ -295,6 +295,7 @@ Ornamento e a Bola de Natal são ambos da categoria Natal.
 | 50 | contém `paper folio armonia` | OFFSET | Comunhões › Paper Folio Armonia (1.13.1) |
 | 51 | contém `estrela de natal` (não são os Ornamentos nem os Ímãs de Natal em estrela, que são OMEGA) | OFFSET | Christmas Gifts › Estrela de Natal (1.13.3) |
 | 52 | da categoria `Press Print ›` e contém `30x40`, `frente e verso` e `tintoretto gesso` (regra estreita: outro Press Print fica Por confirmar) | ESAG | Press Print › 30x40-Imp. Frente e Verso - Tintoretto Gesso (1.13.6) |
+| 53 | da categoria `Standup ›` e contém `calendario standup 20x15` (regra estreita: outro tamanho fica Por confirmar) | ESAG | Standup › Calendário Standup 20x15 (1.13.8) |
 | — | nenhuma regra bate | **Por confirmar** | |
 
 ### Almofadas, mantas e bonecos: regras B1-B9 (regra 9; decididas pelo utilizador a 2026-11-12)
@@ -486,6 +487,9 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
 - **1.2** (2026-11-12): subprocessos dentro de um processo (o primeiro: OFFSET › CARTÕES, com os Cartões de
   Visita); o processo URGENTES passa a chamar-se BOXS AMADOR (chave `BOXS`), com os mesmos dois produtos
   (Landscape 31x23 e Classic 23x31).
+- **1.13.8** (2026-11-27): "Standup › Calendário Standup 20x15" → ESAG (regra 53), a pedido do utilizador. Antes ficava
+  "Por confirmar". Regra estreita: outro tamanho de Calendário Standup fica "Por confirmar"; o "Standup Acrilico" continua OMEGA
+  (regra 38). Não depende da etiqueta.
 - **1.13.7** (2026-11-26): "Moldura Gyala › Moldura Gyala 15 X 15 cm" e "Moldura Temple › Moldura Temple 15 x 10 cm" → OMEGA
   (regra 41, Gyala e Temple). Separador Álbuns: "Fotolibro Plus › Big Landscape 40x30 400gr FPX" → BIG LANDSCAPE 40x30 400GR e
   "Fotolibro Plus › Big Square 30x30 400gr FPX" → BIG SQUARE 30x30 400GR (lista `ALBUNS_FOTOLIBRO_PLUS`). A pedido do utilizador.
@@ -910,5 +914,8 @@ confirmado pelo utilizador; as almofadas foram corrigidas na 1.1.
 | Press Print #U203a 30x40-Imp. Frente e Verso - Tintoretto Gesso | ESAG |
 | Press Print › 30x40-Imp. Frente e Verso - True White | DESCONHECIDO |
 | Press Print › 20x30-Imp. Frente e Verso - Tintoretto Gesso | DESCONHECIDO |
+| Standup › Calendário Standup 20x15 | ESAG |
+| Standup #U203a Calend#U00e1rio Standup 20x15 | ESAG |
+| Standup › Calendário Standup 15x20 | DESCONHECIDO |
 | Poster › Calendário Poster 30x42 | DESCONHECIDO |
 | Card Shop - Postais Especiais › 15x20 (Horizontal) (Qtd. Min. 4) | DESCONHECIDO |
