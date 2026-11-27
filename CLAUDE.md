@@ -209,7 +209,7 @@ Os dados de cada processo vêm da documentação do departamento (Notion).
 | `OFFSET` | OFFSET | Pré Impressão | `A:\PRE_IMPRESSAO\_#OFFSET_DIGITAL` |
 | `BOXS` | BOXS AMADOR | *por confirmar* | *por confirmar* |
 | `ESAG` | ESAG | *por confirmar* | *por confirmar* |
-| `DESCONHECIDO` | Por confirmar | — | Produto sem regra: confirmar com o responsável |
+| `DESCONHECIDO` | POR CONFIRMAR | — | Este produto não está identificado, confirmar manualmente |
 
 O processo BOXS AMADOR substituiu o URGENTES na 1.2 (a pedido do utilizador), com os mesmos dois
 produtos; na 1.4.2 juntou-se o Square 21x21 e na 1.4.3 a Box para Álbum 21x21 cm. A picagem e o destino do BOXS AMADOR ainda não foram dados pelo utilizador: mostrar "Ver documentação do
@@ -489,7 +489,10 @@ Teste à mão no browser: criar uma pasta de canal falsa com algumas pastas `<n�
   (Landscape 31x23 e Classic 23x31).
 - **1.13.9** (2026-11-27): "Christmas Gifts › Cubo 15x15" → OFFSET (regra 28, junto do Cubo 10x10) e "Moldura Ejer › Moldura Ejer
   com Passepartout 20x20" → OMEGA (regra 41, Ejer), a pedido do utilizador. Antes ficavam "Por confirmar". Outro tamanho de
-  Cubo (ex.: 20x20) continua "Por confirmar". Não depende da etiqueta.
+  Cubo (ex.: 20x20) continua "Por confirmar". Não depende da etiqueta. Também a pedido do utilizador: a etiqueta "Por confirmar"
+  passa a dizer "POR CONFIRMAR" (mesma cor) e a descrição "confirmar com o responsável" passa a "Este produto não está
+  identificado, confirmar manualmente" (nos álbuns: "Este álbum não está identificado, confirmar manualmente"; nos avisos:
+  "Confirmar manualmente").
 - **1.13.8** (2026-11-27): "Standup › Calendário Standup 20x15" → ESAG (regra 53), a pedido do utilizador. Antes ficava
   "Por confirmar". Regra estreita: outro tamanho de Calendário Standup fica "Por confirmar"; o "Standup Acrilico" continua OMEGA
   (regra 38). Não depende da etiqueta.

@@ -344,7 +344,7 @@ const Logica = (() => {
     OFFSET:       { nome: "OFFSET",         picagem: "Pré Impressão",      destino: "A:\\PRE_IMPRESSAO\\_#OFFSET_DIGITAL" },
     GIFTS:        { nome: "GIFTS",          picagem: "G1.3 Pré Impressão", destino: "A:\\PRE_IMPRESSAO\\_#GIFTS" },
     ESAG:         { nome: "ESAG",           picagem: VER_DOC,              destino: VER_DOC },
-    DESCONHECIDO: { nome: "Por confirmar",  picagem: "—",                  destino: "Produto sem regra: confirmar com o responsável" },
+    DESCONHECIDO: { nome: "POR CONFIRMAR",  picagem: "—",                  destino: "Este produto não está identificado, confirmar manualmente" },
   };
   // Subprocessos: produtos que, dentro de um processo, são tratados à parte (1.2). Aparecem num bloco
   // próprio dentro do cartão do processo, com a sua pesquisa. Os restantes ficam em "Outros produtos".
@@ -504,7 +504,7 @@ const Logica = (() => {
         const proc = r.porPrefixo[prefixo];
         if (proc) return { ...p, processo: proc, sub: null, numRegra: num, regra: `Regra ${num}: ${nomeCurto} em encomenda ${prefixo}… → ${nomeProcesso(proc)}` };
         return { ...p, processo: "DESCONHECIDO", sub: null, numRegra: num, regra: prefixo
-          ? `Regra ${num}: ${nomeCurto} em encomenda ${prefixo}…: prefixo sem regra (${lista}). Confirmar com o responsável.`
+          ? `Regra ${num}: ${nomeCurto} em encomenda ${prefixo}…: prefixo sem regra (${lista}). Confirmar manualmente.`
           : `Regra ${num}: ${nomeCurto} depende do prefixo da encomenda (${lista}). Indicar a pasta: "<nº>_<id> / ${p.nome}".` };
       }
       // Por acabamento (1.10): ex. calendário poster em True White -> OFFSET › CALENDÁRIOS, em Gesso -> ESAG.
@@ -524,7 +524,7 @@ const Logica = (() => {
         if (valor && r.senao) return { ...p, processo: r.senao.processo, sub: r.senao.sub || null, numRegra: num,
           regra: `Regra ${num}: ${nomeCurto} em ${valor} → ${destinoDe(r.senao.processo, r.senao.sub)}` };
         return { ...p, processo: "DESCONHECIDO", sub: null, numRegra: num, regra: valor
-          ? `Regra ${num}: ${rotulo} «${valor}» sem regra (${lista}). Confirmar com o responsável.`
+          ? `Regra ${num}: ${rotulo} «${valor}» sem regra (${lista}). Confirmar manualmente.`
           : `Regra ${num}: depende do ${rotulo} na etiqueta (${lista}).` };
       }
       if (r.processo) {
@@ -542,7 +542,7 @@ const Logica = (() => {
       const b = REGRAS_BMJCP.find(rb => rb.teste(n));
       return { ...p, processo: b.processo, sub: null, numRegra: num, regra: `Regra ${b.id}: ${b.quando} → ${nomeProcesso(b.processo)}` };
     }
-    return { ...p, processo: "DESCONHECIDO", sub: null, numRegra: 0, regra: "Nenhuma regra corresponde a este produto: confirmar com o responsável" };
+    return { ...p, processo: "DESCONHECIDO", sub: null, numRegra: 0, regra: "Este produto não está identificado, confirmar manualmente" };
   }
 
   // Pasta da encomenda: "<nº>_<order id>", sozinho ou seguido de um separador (espaço, "-" ou "›") e de
@@ -1244,7 +1244,7 @@ function criarProgresso(el, tituloBase = document.title) {
       const n = desconhecidos.length;
       avisos.push(el("div", { className: "aviso erro", role: "alert" },
         el("b", { textContent: `${n} encomenda${s(n)} com produto sem regra. ` }),
-        "Confirmar com o responsável antes de processar. Produtos:",
+        "Confirmar manualmente antes de processar. Produtos:",
         el("ul", {}, ...nomes.map(t => el("li", { textContent: t })))));
     }
     if (multi.length) {
@@ -1372,13 +1372,13 @@ function criarProgresso(el, tituloBase = document.title) {
     const linha = p => {
       const np = p.produto ? Logica.lerNomeProduto(p.produto) : { categoria: "", produto: "(sem pasta de produto)", qtd: 1 };
       return { enc: p.enc, canal: p.canal, categoria: np.categoria, produto: np.produto, qtd: np.qtd, origem: "pasta",
-        regra: p.destino ? `Pasta da categoria: ${p.destino}` : p.varios ? "Mais do que um álbum com categorias diferentes: confirmar" : "Categoria sem regra: confirmar com o responsável" };
+        regra: p.destino ? `Pasta da categoria: ${p.destino}` : p.varios ? "Mais do que um álbum com categorias diferentes: confirmar" : "Este álbum não está identificado, confirmar manualmente" };
     };
 
     // Resumo
     const stat = (n, texto, classe = "") => el("div", { className: `card stat ${classe}` }, el("b", { textContent: fmt(n) }), el("span", { textContent: texto }));
     $("stats-albuns").replaceChildren(stat(plano.length, "Álbuns"), stat(porMover.length, "Por mover", "p-ALBUM"),
-      stat(noSitio.length, "Já na pasta certa"), ...(porConfirmar.length ? [stat(porConfirmar.length, "Por confirmar", "p-DESCONHECIDO")] : []));
+      stat(noSitio.length, "Já na pasta certa"), ...(porConfirmar.length ? [stat(porConfirmar.length, "POR CONFIRMAR", "p-DESCONHECIDO")] : []));
     $("stats-albuns").hidden = false;
 
     // Avisos
@@ -1386,7 +1386,7 @@ function criarProgresso(el, tituloBase = document.title) {
     if (porConfirmar.length) {
       const n = porConfirmar.length;
       avisos.push(el("div", { className: "aviso erro", role: "alert" },
-        el("b", { textContent: `${n} álbu${n === 1 ? "m" : "ns"} sem categoria. ` }), "Confirmar com o responsável e separar à mão:",
+        el("b", { textContent: `${n} álbu${n === 1 ? "m" : "ns"} sem categoria. ` }), "Confirmar manualmente e separar à mão:",
         el("ul", {}, ...porConfirmar.map(p => el("li", { textContent: `${p.enc}: ${p.produto ? Logica.lerNomeProduto(p.produto).nome : "sem pasta de produto"}` })))));
     }
     const trocados = plano.filter(p => p.outraCategoria && p.destino);
@@ -1415,7 +1415,7 @@ function criarProgresso(el, tituloBase = document.title) {
     }
     if (porConfirmar.length) {
       cartoes.push(el("section", { className: "card processo p-DESCONHECIDO" },
-        el("div", { className: "processo-topo" }, el("h3", { textContent: `Por confirmar · ${fmt(porConfirmar.length)}` })),
+        el("div", { className: "processo-topo" }, el("h3", { textContent: `POR CONFIRMAR · ${fmt(porConfirmar.length)}` })),
         el("div", { className: "processo-corpo" }, ...blocoEncomendas("DESCONHECIDO", porConfirmar.map(linha), true, "Álbuns por confirmar", "Está em"))));
     }
     $("categorias-albuns").replaceChildren(...cartoes);
@@ -1471,7 +1471,7 @@ function criarProgresso(el, tituloBase = document.title) {
         : r.processo ? el("span", {}, pill(r.processo), r.sub ? ` › ${SUBPROCESSOS[r.sub].nome}` : "",
           ...(r.porMaterial || []).flatMap(x => [` · em ${x.material}: `, pill(x.processo)]))
           : el("span", {}, "regras B1-B9: ", pill("BMJCP"), " ou ", pill("GIFTS")), r.exemplos]),
-      ["—", "nenhuma regra bate", pill("DESCONHECIDO"), "confirmar com o responsável"],
+      ["—", "nenhuma regra bate", pill("DESCONHECIDO"), "Este produto não está identificado, confirmar manualmente"],
     ]),
     el("h3", { textContent: "Almofadas, mantas e bonecos (BMJCP ou GIFTS)" }),
     el("p", { textContent: "Por esta ordem; ganha a primeira que bate. «Com Margem» é sempre GIFTS; «Sem Margem», «Polar», «Frente e Verso» e mantas são sempre BMJCP, em qualquer tamanho. O que não é BMJCP é GIFTS." }),
